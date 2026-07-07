@@ -14,7 +14,7 @@ A modern, fully responsive, production-ready full-stack Student Management Syste
   - Dynamic enrollment percentage progress bars.
 - **🎓 Comprehensive Student Directory (CRUD)**:
   - Add, Edit, and Delete student records with inline validation (email regex, phone length).
-  - **Live Profile Photo Upload**: Direct integration with Supabase Storage bucket (`student-avatars`) with live image preview.
+  - **Live Profile Photo Upload**: Direct integration with Supabase Storage bucket (`student-images`) with live image preview.
   - **Advanced Filtering & Sorting**: Sort by Name or Created Date, filter by Academic Department and Year, and search globally across names, emails, and departments.
   - **Bulk Operations**: Multi-select checkboxes for batch deleting records.
   - **CSV Import / Export**: Batch upload student spreadsheets with error reporting or export directory data to CSV.
@@ -69,7 +69,7 @@ SUPABASE_ANON_KEY=your-supabase-anon-key
 2. Copy the entire contents of `supabase/schema.sql` and run the script. This will automatically:
    - Create the `students` table.
    - Configure **Row-Level Security (RLS)** policies ensuring multi-tenant security (`auth.uid() = user_id`).
-   - Create the `student-avatars` public storage bucket for profile image uploads.
+   - Create the `student-images` public storage bucket for profile image uploads.
    - Insert sample mock student records.
 
 ### 5. Running the Application Locally
