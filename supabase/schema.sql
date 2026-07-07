@@ -16,6 +16,14 @@ CREATE TABLE IF NOT EXISTS public.students (
     CONSTRAINT unique_email_per_user UNIQUE (email, user_id)
 );
 
+-- Ensure all required columns exist if table was already created previously
+ALTER TABLE public.students ADD COLUMN IF NOT EXISTS avatar_url TEXT;
+ALTER TABLE public.students ADD COLUMN IF NOT EXISTS phone TEXT;
+ALTER TABLE public.students ADD COLUMN IF NOT EXISTS department TEXT;
+ALTER TABLE public.students ADD COLUMN IF NOT EXISTS year INTEGER;
+ALTER TABLE public.students ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE DEFAULT auth.uid();
+ALTER TABLE public.students ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL;
+
 -- 2. Create index for faster search and ordering
 CREATE INDEX IF NOT EXISTS idx_students_user_id ON public.students(user_id);
 CREATE INDEX IF NOT EXISTS idx_students_name ON public.students(name);
