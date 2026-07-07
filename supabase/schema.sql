@@ -50,33 +50,36 @@ CREATE POLICY "Users can delete their own students"
 -- 5. Create storage bucket named 'student-images' (public for viewing avatars)
 INSERT INTO storage.buckets (id, name, public) 
 VALUES ('student-images', 'student-images', true)
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT (id) DO UPDATE SET public = true;
 
 -- 6. Enable RLS on storage objects
 ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
 
--- 7. Storage Policies
+-- 7. Drop existing policies if any to avoid conflicts when re-running
+DROP POLICY IF EXISTS "Public Access to Student Images" ON storage.objects;
+DROP POLICY IF EXISTS "Authenticated users can upload student images" ON storage.objects;
+DROP POLICY IF EXISTS "Users can update their own uploaded images" ON storage.objects;
+DROP POLICY IF EXISTS "Users can delete their own uploaded images" ON storage.objects;
+DROP POLICY IF EXISTS "Allow authenticated uploads" ON storage.objects;
+DROP POLICY IF EXISTS "Allow authenticated updates" ON storage.objects;
+DROP POLICY IF EXISTS "Allow authenticated deletes" ON storage.objects;
+
+-- 8. Storage Policies for 'student-images' bucket
 CREATE POLICY "Public Access to Student Images" 
     ON storage.objects FOR SELECT 
     USING (bucket_id = 'student-images');
 
-CREATE POLICY "Authenticated users can upload student images" 
+CREATE POLICY "Allow authenticated uploads" 
     ON storage.objects FOR INSERT 
-    WITH CHECK (
-        bucket_id = 'student-images' 
-        AND auth.role() = 'authenticated'
-    );
+    TO authenticated
+    WITH CHECK (bucket_id = 'student-images');
 
-CREATE POLICY "Users can update their own uploaded images" 
+CREATE POLICY "Allow authenticated updates" 
     ON storage.objects FOR UPDATE 
-    USING (
-        bucket_id = 'student-images' 
-        AND auth.uid() = owner
-    );
+    TO authenticated
+    USING (bucket_id = 'student-images');
 
-CREATE POLICY "Users can delete their own uploaded images" 
+CREATE POLICY "Allow authenticated deletes" 
     ON storage.objects FOR DELETE 
-    USING (
-        bucket_id = 'student-images' 
-        AND auth.uid() = owner
-    );
+    TO authenticated
+    USING (bucket_id = 'student-images');
