@@ -9,7 +9,7 @@ export const studentService = {
     pageSize = 10, 
     sortBy = 'created_at', 
     sortOrder = 'desc' 
-  }) {
+  } = {}) {
     if (!isSupabaseConfigured) {
       return { data: [], count: 0, error: null };
     }

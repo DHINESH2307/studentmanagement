@@ -133,9 +133,9 @@ export default function App() {
     try {
       const [allStudents, statsRes] = await Promise.all([
         studentService.getStudents(),
-        studentService.getStudentStats()
+        studentService.getDepartmentStats()
       ]);
-      setStudents(allStudents || []);
+      setStudents(allStudents?.data || (Array.isArray(allStudents) ? allStudents : []));
       setStats(statsRes || { total: 0, recent: [], departmentCounts: {} });
     } catch (err) {
       showToast(`Error fetching records: ${err.message}`, 'error');
